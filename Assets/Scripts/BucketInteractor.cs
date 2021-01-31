@@ -20,6 +20,11 @@ public class BucketInteractor : MonoBehaviour, IPauseInteractor
 
     private void Update()
     {
+        HandleBucketAnimation();
+    }
+
+    private void HandleBucketAnimation()
+    {
         if (hasCollected && inPauseMode == false)
         {
             GetComponent<Animator>().enabled = false;

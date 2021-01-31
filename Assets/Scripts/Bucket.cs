@@ -69,13 +69,13 @@ public class Bucket : MonoBehaviour, IPooledObject, IPauseInteractor
 
     private void OnEnable()
     {
-        if (closestCell)
+        if (closestCell != null)
             closestCell.OnSquareSet += TryAcceptSquare;
     }
 
     private void OnDisable()
     {
-        if (closestCell)
+        if (closestCell != null)
             closestCell.OnSquareSet -= TryAcceptSquare;
         
     }
