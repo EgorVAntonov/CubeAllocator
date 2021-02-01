@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BucketSide { top, right, bottom, left }
+
 public class CellsGrid : MonoBehaviour
 {
+    private Cell[,] cells = new Cell[6, 6];
+
     public const int HEIGHT = 6;
     public const int WIDHT = 6;
 
     [SerializeField] private GameObject cellPrefab;
     [SerializeField] private GameObject bucketPrefab;
-    enum BucketSide { top, right, bottom, left }
 
     private BucketsPool allBuckets;
-
-    private Cell[,] cells = new Cell[6, 6];
 
     void Awake()
     {
@@ -65,25 +66,25 @@ public class CellsGrid : MonoBehaviour
         {
             case BucketSide.top:
 
-                allBuckets.topBuckets[i] = newBucket;
+                allBuckets.SetBucketToRow(newBucket, BucketSide.top);
                 setupPos = cellPosition + Vector3.up;
                 setupRot = Quaternion.Euler(new Vector3(0f, 0f, 180f));
                 break;
             case BucketSide.right:
 
-                allBuckets.rightBuckets[j] = newBucket;
+                allBuckets.SetBucketToRow(newBucket, BucketSide.right);
                 setupPos += Vector3.right;
                 setupRot = Quaternion.Euler(new Vector3(0f, 0f, 90f));
                 break;
             case BucketSide.bottom:
 
-                allBuckets.bottomBuckets[i] = newBucket;
+                allBuckets.SetBucketToRow(newBucket, BucketSide.bottom);
                 setupPos += Vector3.down;
                 setupRot = Quaternion.Euler(new Vector3(0f, 0f, 0f));
                 break;
             case BucketSide.left:
 
-                allBuckets.leftBuckets[j] = newBucket;
+                allBuckets.SetBucketToRow(newBucket, BucketSide.left);
                 setupPos += Vector3.left;
                 setupRot = Quaternion.Euler(new Vector3(0f, 0f, 270f));
 

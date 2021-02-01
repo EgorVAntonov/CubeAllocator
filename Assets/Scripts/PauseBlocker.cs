@@ -39,6 +39,7 @@ public class PauseBlocker : MonoBehaviour
 
     private void SetPause()
     {
+        FindObjectOfType<BucketsPool>().SetPause();
 
         foreach (Square square in FindObjectsOfType<Square>())
         {
@@ -46,24 +47,16 @@ public class PauseBlocker : MonoBehaviour
             square.GetComponent<BucketInteractor>().SetPause();
         }
 
-        foreach (Bucket bucket in FindObjectsOfType<Bucket>())
-        {
-            bucket.SetPause();
-        }
     }
 
     private void SetUnpause()
     {
+        FindObjectOfType<BucketsPool>().SetUnpause();
 
         foreach (Square square in FindObjectsOfType<Square>())
         {
             square.SetUnpause();
             square.GetComponent<BucketInteractor>().SetUnpause();
-        }
-
-        foreach (Bucket bucket in FindObjectsOfType<Bucket>())
-        {
-            bucket.SetUnpause();
         }
     }
     

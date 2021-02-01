@@ -2,15 +2,79 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BucketsPool : MonoBehaviour
+public class BucketsPool : MonoBehaviour, IPauseInteractor
 {
-    public Bucket[] topBuckets;
-    public Bucket[] rightBuckets;
-    public Bucket[] leftBuckets;
-    public Bucket[] bottomBuckets;
+    [SerializeField] private BucketsRow topBuckets;
+    [SerializeField] private BucketsRow rightBuckets;
+    [SerializeField] private BucketsRow leftBuckets;
+    [SerializeField] private BucketsRow bottomBuckets;
 
-    private bool inPauseMode;
+    [SerializeField] private BucketChedule bucketsChedule;
 
+    private void Start()
+    {
+        
+    }
+    
+    private void Update()
+    {
+
+    }
+
+    public void SetArraysLengths(int gridWidth, int gridHeigth)
+    {
+        topBuckets.InitializeRow(gridWidth, bucketsChedule);
+        bottomBuckets.InitializeRow(gridWidth, bucketsChedule);
+
+        leftBuckets.InitializeRow(gridHeigth, bucketsChedule);
+        rightBuckets.InitializeRow(gridHeigth, bucketsChedule);
+    }
+
+    public void SetBucketToRow(Bucket bucket, BucketSide side)
+    {
+        switch (side)
+        {
+            case BucketSide.top:
+                topBuckets.AddBucket(bucket);
+
+                break;
+            case BucketSide.right:
+                rightBuckets.AddBucket(bucket);
+
+                break;
+            case BucketSide.bottom:
+                bottomBuckets.AddBucket(bucket);
+
+                break;
+            case BucketSide.left:
+                leftBuckets.AddBucket(bucket);
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void SetPause()
+    {
+        topBuckets.SetPause();
+        rightBuckets.SetPause();
+        leftBuckets.SetPause();
+        bottomBuckets.SetPause();
+    }
+
+    public void SetUnpause()
+    {
+        topBuckets.SetUnpause();
+        rightBuckets.SetUnpause();
+        leftBuckets.SetUnpause();
+        bottomBuckets.SetUnpause();
+    }
+}
+
+[System.Serializable]
+public class BucketChedule
+{
     [SerializeField] private float startDelay;
     [Space]
     [SerializeField] private float minShowDuration;
@@ -19,98 +83,12 @@ public class BucketsPool : MonoBehaviour
     [SerializeField] private float minBreakTime;
     [SerializeField] private float maxBreakTime;
 
-    private void Start()
+    public float GetStartDelay()
     {
-        StartCoroutine(ManageTopBuckets());
-        StartCoroutine(ManageRightBuckets());
-        StartCoroutine(ManageBottomBuckets());
-        StartCoroutine(ManageLeftBuckets());
-    }
-    /*
-    private void Update()
-    {
-        ManageTopBuckets();
-    }
-    */
-    IEnumerator ManageTopBuckets()
-    {
-        yield return new WaitForSeconds(startDelay + GetBreakTime());
-
-        while (true)
-        {
-            Bucket currentBucket = GetRandomBucketFromPool(topBuckets);
-
-            currentBucket.GetFromPool();
-            yield return new WaitForSeconds(GetShowDuration());
-
-            yield return new WaitUntil(() => currentBucket.squaresTaking == 0);
-            currentBucket.ReturnToPool();
-            yield return new WaitForSeconds(GetBreakTime());
-        }
+        return startDelay + GetBreakTime();
     }
 
-    IEnumerator ManageRightBuckets()
-    {
-        yield return new WaitForSeconds(startDelay + GetBreakTime());
-
-        while (true)
-        {
-            Bucket currentBucket = GetRandomBucketFromPool(rightBuckets);
-
-            currentBucket.GetFromPool();
-            yield return new WaitForSeconds(GetShowDuration());
-
-            yield return new WaitUntil(() => currentBucket.squaresTaking == 0);
-            currentBucket.ReturnToPool();
-            yield return new WaitForSeconds(GetBreakTime());
-        }
-    }
-
-    IEnumerator ManageBottomBuckets()
-    {
-        yield return new WaitForSeconds(startDelay + GetBreakTime());
-
-        while (true)
-        {
-            Bucket currentBucket = GetRandomBucketFromPool(bottomBuckets);
-
-            currentBucket.GetFromPool();
-            yield return new WaitForSeconds(GetShowDuration());
-
-            yield return new WaitUntil(() => currentBucket.squaresTaking == 0);
-            currentBucket.ReturnToPool();
-            yield return new WaitForSeconds(GetBreakTime());
-        }
-    }
-
-    IEnumerator ManageLeftBuckets()
-    {
-        yield return new WaitForSeconds(startDelay + GetBreakTime());
-
-        while (true)
-        {
-            Bucket currentBucket = GetRandomBucketFromPool(leftBuckets);
-
-            currentBucket.GetFromPool();
-            yield return new WaitForSeconds(GetShowDuration());
-
-            yield return new WaitUntil(() => currentBucket.squaresTaking == 0);
-            currentBucket.ReturnToPool();
-            yield return new WaitForSeconds(GetBreakTime());
-        }
-    }
-
-    private Bucket GetRandomBucketFromPool(Bucket[] pool)
-    {
-        Bucket randomBucket = pool[Random.Range(0, pool.Length)];
-        while (randomBucket.canBeChosenForActivation == false)
-        {
-            randomBucket = pool[Random.Range(0, pool.Length)];
-        }
-        return randomBucket;
-    }
-
-    private float GetShowDuration()
+    public float GetShowTime()
     {
         if (minShowDuration > maxShowDuration)
         {
@@ -120,7 +98,7 @@ public class BucketsPool : MonoBehaviour
         return Random.Range(minShowDuration, maxShowDuration);
     }
 
-    private float GetBreakTime()
+    public float GetBreakTime()
     {
         if (minBreakTime > maxBreakTime)
         {
@@ -128,14 +106,5 @@ public class BucketsPool : MonoBehaviour
             return minBreakTime;
         }
         return Random.Range(minBreakTime, maxBreakTime);
-    }
-
-    public void SetArraysLengths(int gridWidth, int gridHeigth)
-    {
-        topBuckets = new Bucket[gridWidth];
-        bottomBuckets = new Bucket[gridWidth];
-
-        leftBuckets = new Bucket[gridHeigth];
-        rightBuckets = new Bucket[gridHeigth];
     }
 }
