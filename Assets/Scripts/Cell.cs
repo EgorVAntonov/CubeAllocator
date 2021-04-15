@@ -31,35 +31,55 @@ public class Cell : MonoBehaviour
         currentSquare = null;
     }
 
-    public bool CanAcceptSquare()
-    {
-        return currentSquare == null;
-    }
-
-    public bool CanSetSquare(Cell previousCell)
+    public bool CanMoveSquareFrom(Cell previousCell)
     {
         if (previousCell == null)
-            return false;
-
-        if (IsNearWithCell(previousCell) == false)
-            return false;
-
-        if (CanAcceptSquare() == false)
             return false;
 
         if (previousCell.currentSquare == null)
             return false;
 
+        if (CanAcceptSquare() == false)
+            return false;
+
+        if (SquareCanMoveOnThisCell(previousCell, previousCell.currentSquare.GetMoveType()) == false)
+            return false;
+
         return true;
     }
 
-    public bool IsNearWithCell(Cell cell)
+    public bool SquareCanMoveOnThisCell(Cell cell, SquareType moveType)
     {
-        //all cells around given one
-        if (Math.Abs(gridPosition.x - cell.gridPosition.x) > 1f) return false;
-        if (Math.Abs(gridPosition.y - cell.gridPosition.y) > 1f) return false;
+        float xDiffrence = Mathf.Abs(gridPosition.x - cell.gridPosition.x);
+        float yDiffrence = Mathf.Abs(gridPosition.y - cell.gridPosition.y);
+        switch (moveType)
+        {
+            case SquareType.Rook:
+                //aligned cells
+                if ((xDiffrence == 1f) && (yDiffrence == 0f)||
+                    (xDiffrence == 0f) && (yDiffrence == 1f))
+                    return true;
+                break;
+            case SquareType.Bishop:
+                //diagonal cells
+                if ((xDiffrence == 1f) && (yDiffrence == 1f))
+                    return true;
+                break;
+            case SquareType.Queen:
+                //all cells around
+                if ((xDiffrence == 1f) && (yDiffrence == 0f) ||
+                    (xDiffrence == 0f) && (yDiffrence == 1f) ||
+                    (xDiffrence == 1f) && (yDiffrence == 1f))
+                    return true;
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
 
-        return true;
-
+    public bool CanAcceptSquare()
+    {
+        return currentSquare == null;
     }
 }

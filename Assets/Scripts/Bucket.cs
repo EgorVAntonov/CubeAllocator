@@ -10,10 +10,11 @@ public class Bucket : MonoBehaviour, IPooledObject, IPauseInteractor
 
     private int colorIndex;
     public bool canBeChosenForActivation;
-    public bool canAcceptSquare;
+    public bool canAcceptSquare; // controlled by animation
 
     public Cell closestCell;
     public int squaresTaking;
+    public float scoreMultiplicator;
 
 
     public void SetupBucket(Cell closestCell, Vector3 setupPos, Quaternion setupRot)
@@ -27,7 +28,6 @@ public class Bucket : MonoBehaviour, IPooledObject, IPauseInteractor
         animator = GetComponent<Animator>();
 
         canBeChosenForActivation = true;
-        canAcceptSquare = false;
     }
 
     public void SetRandomColor()
@@ -46,10 +46,9 @@ public class Bucket : MonoBehaviour, IPooledObject, IPauseInteractor
 
         if (closestCell.currentSquare.GetColorIndex() == colorIndex)
         {
-            Debug.Log("square succsesfully delete");
-            closestCell.currentSquare.SetTint(false);
-            closestCell.currentSquare.GetComponent<BucketInteractor>().StartAnimationWithBucket(this);//make pool later
-            closestCell.currentSquare = null;
+            scoreMultiplicator += 1f;
+            closestCell.currentSquare.CollectSquare(this);
+            closestCell.RemoveSquare();
         }
     }
 
@@ -58,6 +57,7 @@ public class Bucket : MonoBehaviour, IPooledObject, IPauseInteractor
         SetRandomColor();
         canBeChosenForActivation = false;
         squaresTaking = 0;
+        scoreMultiplicator = 0f;
         animator.SetTrigger("Show");
     }
 

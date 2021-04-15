@@ -6,10 +6,10 @@ public enum BucketSide { top, right, bottom, left }
 
 public class CellsGrid : MonoBehaviour
 {
-    private Cell[,] cells = new Cell[6, 6];
-
     public const int HEIGHT = 6;
     public const int WIDHT = 6;
+
+    private Cell[,] cells = new Cell[WIDHT, HEIGHT];
 
     [SerializeField] private GameObject cellPrefab;
     [SerializeField] private GameObject bucketPrefab;

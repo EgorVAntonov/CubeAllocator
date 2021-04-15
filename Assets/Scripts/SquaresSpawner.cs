@@ -7,6 +7,7 @@ public class SquaresSpawner : MonoBehaviour
     private ColorHandler colorHandler;
     private CellsGrid grid;
     private PauseBlocker pauseBlocker;
+    private GameLoop gameLoop;
 
     [SerializeField] private GameObject squarePrefab;
     [SerializeField] private float interval;
@@ -14,16 +15,19 @@ public class SquaresSpawner : MonoBehaviour
     private float timeToSpawn;
     private float timer;
 
+    //public bool forTesting = false;
+
     private void Awake()
     {
         colorHandler = FindObjectOfType<ColorHandler>();
         pauseBlocker = FindObjectOfType<PauseBlocker>();
+        gameLoop = FindObjectOfType<GameLoop>();
         grid = GetComponent<CellsGrid>();
     }
 
     private void Start()
     {
-        timeToSpawn = 1f; // remake later
+        timeToSpawn = 1f; 
         timer = 0f;
     }
 
@@ -35,6 +39,14 @@ public class SquaresSpawner : MonoBehaviour
             {
                 SpawnNewSquare();
                 timeToSpawn += interval;
+                /* manual spawning for testing
+                if (forTesting == true)
+                {
+                    forTesting = false;
+                    SpawnNewSquare();
+                    timeToSpawn += interval;
+                }
+                */
             }
             else
             {
@@ -52,13 +64,19 @@ public class SquaresSpawner : MonoBehaviour
 
     private bool CanSpawn()
     {
-        return grid.HasEmptyCell() && pauseBlocker.pauseMode == false;
+        return pauseBlocker.pauseMode == false;
     }
 
     private void SpawnNewSquare()
     {
         Square newSquare = Instantiate(squarePrefab).GetComponent<Square>();
+        newSquare.OnSquareBreak += gameLoop.SetGameOver;
         newSquare.SpawnOnCell(grid.GetRandomCell());
+    }
+
+    public void SetNewInterval(float value)
+    {
+        interval = value;
     }
 
 }

@@ -15,20 +15,15 @@ public class BucketsRow : MonoBehaviour
 
     void Start()
     {
+        isShowing = false;
         inPauseMode = false;
         timer = chedule.GetStartDelay();
     }
 
     void Update()
     {
-        if (inPauseMode)
-        {
-            return;
-        }
-        else
-        {
+        if (inPauseMode == false)
             ManageBuckets();
-        }
     }
 
     private void ManageBuckets()

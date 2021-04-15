@@ -11,16 +11,6 @@ public class BucketsPool : MonoBehaviour, IPauseInteractor
 
     [SerializeField] private BucketChedule bucketsChedule;
 
-    private void Start()
-    {
-        
-    }
-    
-    private void Update()
-    {
-
-    }
-
     public void SetArraysLengths(int gridWidth, int gridHeigth)
     {
         topBuckets.InitializeRow(gridWidth, bucketsChedule);
@@ -85,7 +75,7 @@ public class BucketChedule
 
     public float GetStartDelay()
     {
-        return startDelay + GetBreakTime();
+        return startDelay + GetBreakTime() + Random.Range(0f, 4f);
     }
 
     public float GetShowTime()

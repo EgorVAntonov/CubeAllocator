@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class SquareMover : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler
 {
     private CellsGrid grid;
     private Cell cell;
 
+    public Text testText;
     public static Cell[] currentInteractingCells = new Cell[10];
 
     private void Start()
@@ -25,7 +27,7 @@ public class SquareMover : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
 
         Cell previousCell = currentInteractingCells[pointerID];
 
-        if (cell.CanSetSquare(previousCell))
+        if (cell.CanMoveSquareFrom(previousCell))
         {
             cell.SetSquare(previousCell.currentSquare);
             previousCell.RemoveSquare();
@@ -35,22 +37,26 @@ public class SquareMover : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
 
     public void OnPointerDown(PointerEventData eventData)
     {
-       // Debug.Log("pointer " + eventData.pointerId + " down on  " + gameObject.name);
+        if (eventData.pointerId < 0) return;
+
+        // Debug.Log("pointer " + eventData.pointerId + " down on  " + gameObject.name);
         currentInteractingCells[eventData.pointerId] = cell;
         if (cell.currentSquare != null)
         {
-            cell.currentSquare.SetTint(true);
+            cell.currentSquare.SetTint();
         }
         
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-       // Debug.Log("pointer " + eventData.pointerId + " up from  " + gameObject.name);
-        
+        if (eventData.pointerId < 0) return;
+
+        // Debug.Log("pointer " + eventData.pointerId + " up from  " + gameObject.name);
+
         if (currentInteractingCells[eventData.pointerId].currentSquare != null)
         {
-            currentInteractingCells[eventData.pointerId].currentSquare.SetTint(false);
+            currentInteractingCells[eventData.pointerId].currentSquare.UnsetTint();
         }
         currentInteractingCells[eventData.pointerId] = null;
     }
