@@ -28,7 +28,6 @@ public class Square : MonoBehaviour, IPauseInteractor
     private ScoreSource source;
 
     private Cell ownCell;
-    private bool isOnBoard;
 
     public delegate void SqareBreak();
     public event SqareBreak OnSquareBreak;
@@ -78,7 +77,6 @@ public class Square : MonoBehaviour, IPauseInteractor
 
     public void SpawnOnCell(Cell cell)
     {
-        isOnBoard = false;
         ownCell = cell;
         transform.position = cell.transform.position; 
         GetComponent<Animator>().SetTrigger("Fall");
@@ -89,7 +87,6 @@ public class Square : MonoBehaviour, IPauseInteractor
         SetupSquare();
         if (ownCell.CanAcceptSquare())
         {
-            isOnBoard = true;
             ownCell.SetSquare(this);
         }
         else
